@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHER — Hyper-Animated Neo-Luxury E-Commerce</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            dark: {
+              950: '#050608',
+              900: '#0A0B10',
+              850: '#0F1118',
+              800: '#141724',
+              700: '#1E2336',
+              600: '#2A3049'
+            },
+            accent: {
+              DEFAULT: '#6366F1',
+              glow: '#4F46E5',
+              neon: '#818CF8',
+              cyan: '#06B6D4',
+              pink: '#EC4899',
+              violet: '#A855F7',
+              emerald: '#10B981'
+            }
+          },
+          animation: {
+            'blob-slow': 'blobMorph 18s ease-in-out infinite alternate',
+            'blob-delayed': 'blobMorph 22s ease-in-out 4s infinite alternate',
+            'spin-slow': 'spin 24s linear infinite',
+            'spin-reverse': 'spinRev 30s linear infinite',
+            'float-fast': 'float 4s ease-in-out infinite',
+            'float-slow': 'float 7s ease-in-out infinite',
+            'float-delayed': 'float 6s ease-in-out 2s infinite',
+            'shimmer-fast': 'shimmer 2s infinite linear',
+            'laser-sweep': 'laserSweep 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+            'pulse-neon': 'pulseNeon 2.5s ease-in-out infinite',
+            'marquee': 'marquee 28s linear infinite',
+            'marquee-rev': 'marqueeRev 32s linear infinite',
+            'sound-wave': 'soundWave 1.2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            blobMorph: {
+              '0%': { transform: 'translate(0px, 0px) scale(1) rotate(0deg)', borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+              '50%': { transform: 'translate(50px, -60px) scale(1.15) rotate(180deg)', borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' },
+              '100%': { transform: 'translate(-40px, 40px) scale(0.9) rotate(360deg)', borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+            },
+            spinRev: {
+              '0%': { transform: 'rotate(360deg)' },
+              '100%': { transform: 'rotate(0deg)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            shimmer: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(200%)' },
+            },
+            laserSweep: {
+              '0%': { transform: 'translateX(-150%) skewX(-20deg)' },
+              '40%, 100%': { transform: 'translateX(250%) skewX(-20deg)' }
+            },
+            pulseNeon: {
+              '0%, 100%': { opacity: '0.4', filter: 'blur(20px)' },
+              '50%': { opacity: '0.9', filter: 'blur(35px)' },
+            },
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+            marqueeRev: {
+              '0%': { transform: 'translateX(-50%)' },
+              '100%': { transform: 'translateX(0%)' },
+            },
+            soundWave: {
+              '0%': { height: '15%' },
+              '100%': { height: '100%' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom sleek scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050608; }
+    ::-webkit-scrollbar-thumb { background: #1e2336; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+    /* Custom animated cursor styling */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      a, button, input, [role="button"], .interactive-elem { cursor: none; }
+    }
+    #custom-cursor-dot {
+      pointer-events: none;
+      position: fixed;
+      z-index: 99999;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #06b6d4;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+      box-shadow: 0 0 10px #06b6d4, 0 0 20px #6366f1;
+    }
+    #custom-cursor-ring {
+      pointer-events: none;
+      position: fixed;
+      z-index: 99998;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(129, 140, 248, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1), 
+                  height 0.3s cubic-bezier(0.19, 1, 0.22, 1), 
+                  border-color 0.3s ease, 
+                  background-color 0.3s ease;
+      backdrop-filter: blur(1px);
+    }
+    .cursor-hover #custom-cursor-ring {
+      width: 60px;
+      height: 60px;
+      border-color: rgba(6, 182, 212, 0.9);
+      background-color: rgba(6, 182, 212, 0.08);
+    }
+    .cursor-hover #custom-cursor-dot {
+      width: 14px;
+      height: 14px;
+      background: #ec4899;
+      box-shadow: 0 0 15px #ec4899;
+    }
+
+    /* Glass Panels */
+    .glass-box {
+      background: rgba(15, 17, 24, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-box-subtle {
+      background: rgba(20, 23, 36, 0.5);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Holographic card glare overlay */
+    .card-glare {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.12), transparent 80%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      z-index: 10;
+    }
+    .group:hover .card-glare {
+      opacity: 1;
+    }
+
+    /* Radar Hotspot Wave Effect */
+    .radar-pulse::before, .radar-pulse::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 9999px;
+      border: 2px solid #06b6d4;
+      animation: radarRings 2.4s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    }
+    .radar-pulse::after {
+      animation-delay: 1.2s;
+    }
+    @keyframes radarRings {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    /* Flying ghost clone */
+    .fly-clone {
+      position: fixed;
+      z-index: 999999;
+      pointer-events: none;
+      transition: all 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.6);
+      border-radius: 1.25rem;
+    }
+
+    /* Particle burst styling */
+    .burst-particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: burstAnim 0.7s forwards ease-out;
+      z-index: 50;
+    }
+    @keyframes burstAnim {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    /* Gradient animated border */
+    .animated-border {
+      background: linear-gradient(60deg, #6366f1, #06b6d4, #a855f7, #6366f1);
+      background-size: 300% 300%;
+      animation: gradientShift 6s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+
+<body class="bg-dark-950 text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-accent-cyan selection:text-dark-950">
+
+  <div id="custom-cursor-dot" class="hidden md:block"></div>
+  <div id="custom-cursor-ring" class="hidden md:block"></div>
+
+  <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-[550px] h-[550px] bg-accent/25 rounded-full blur-[130px] animate-blob-slow"></div>
+    <div class="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-accent-cyan/20 rounded-full blur-[150px] animate-blob-delayed"></div>
+    <div class="absolute -bottom-40 left-1/4 w-[650px] h-[650px] bg-accent-violet/20 rounded-full blur-[160px] animate-blob-slow" style="animation-direction: reverse;"></div>
+    <!-- Interactive ambient cyber grid -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"></div>
+  </div>
+
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 py-4 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto glass-box rounded-2xl px-5 py-3 flex items-center justify-between shadow-2xl shadow-black/80 relative">
+      
+      <!-- Brand Logo with animated glow icon -->
+      <a href="#" class="flex items-center gap-3 group interactive-elem">
+        <div class="relative w-11 h-11 rounded-xl animated-border p-[1.5px] group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+          <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center text-white">
+            <i data-lucide="zap" class="w-5 h-5 text-accent-cyan group-hover:text-accent-pink transition-colors animate-pulse"></i>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-black text-xl tracking-wider bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent group-hover:from-accent-cyan group-hover:to-accent-pink transition-all">
+            AETHER<span class="text-accent-cyan animate-ping inline-block w-1.5 h-1.5 rounded-full ml-1"></span>
+          </span>
+          <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase -mt-1">Neo-Sensory Lab</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation with sliding active pill -->
+      <nav id="nav-container" class="hidden md:flex items-center gap-1 p-1 bg-white/5 rounded-2xl border border-white/5 relative">
+        <div id="nav-pill" class="absolute top-1 bottom-1 bg-accent/30 rounded-xl border border-accent/50 shadow-lg shadow-accent/20 transition-all duration-300 pointer-events-none opacity-0"></div>
+        <a href="#featured" class="nav-link px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all interactive-elem relative z-10">Flagship</a>
+        <a href="#catalog" class="nav-link px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all interactive-elem relative z-10">Collection</a>
+        <a href="#spotlight" class="nav-link px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all interactive-elem relative z-10">Architecture</a>
+        <a href="#reviews" class="nav-link px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all interactive-elem relative z-10">Sentiments</a>
+      </nav>
+
+      <!-- Utility Actions (Search, Wishlist, Cart) -->
+      <div class="flex items-center gap-2.5 sm:gap-3.5">
+        
+        <!-- Live Search Bar with expanding animation -->
+        <div class="relative hidden sm:block">
+          <div class="flex items-center glass-box-subtle rounded-xl px-3 py-1.5 focus-within:ring-2 focus-within:ring-accent-cyan transition-all duration-300 w-40 md:w-56 focus-within:w-72">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 mr-2 flex-shrink-0 animate-pulse"></i>
+            <input 
+              id="search-input" 
+              type="text" 
+              placeholder="Search gear..." 
+              class="bg-transparent text-xs w-full outline-none text-white placeholder-slate-500 interactive-elem"
+            />
+          </div>
+          <!-- Live search dropdown with fade/scale -->
+          <div id="search-dropdown" class="absolute top-full mt-2 w-72 right-0 glass-box rounded-2xl shadow-2xl p-2 hidden flex-col gap-1 z-50 transform origin-top-right transition-all duration-200">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Wishlist Button with bouncing counter -->
+        <button id="wishlist-btn" class="relative p-2.5 rounded-xl glass-box-subtle hover:bg-white/10 text-slate-300 hover:text-accent-pink transition-all group interactive-elem">
+          <i data-lucide="heart" class="w-5 h-5 group-hover:scale-125 transition-transform duration-200"></i>
+          <span id="wishlist-count" class="absolute -top-1 -right-1 bg-accent-pink text-white text-[9px] font-mono font-bold w-4 h-4 rounded-full flex items-center justify-center scale-0 transition-transform duration-300 shadow-lg shadow-pink-500/50">
+            0
+          </span>
+        </button>
+
+        <!-- Cart Trigger Button with laser sweep effect -->
+        <button id="open-cart-btn" class="relative overflow-hidden flex items-center gap-2.5 bg-gradient-to-r from-accent to-accent-glow hover:from-accent-neon hover:to-accent text-white px-4 py-2.5 rounded-xl shadow-lg shadow-accent/30 hover:scale-105 active:scale-95 transition-all duration-200 interactive-elem group">
+          <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 animate-laser-sweep pointer-events-none"></div>
+          <i data-lucide="shopping-bag" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300"></i>
+          <span class="text-xs font-bold tracking-wide hidden sm:inline">Bag</span>
+          <span id="cart-counter" class="bg-white text-dark-950 text-xs font-black w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-md">
+            0
+          </span>
+        </button>
+
+        <!-- Mobile Menu Hamburger -->
+        <button id="mobile-menu-btn" class="p-2.5 rounded-xl glass-box-subtle text-slate-300 hover:bg-white/10 md:hidden interactive-elem">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav" class="hidden md:hidden max-w-7xl mx-auto mt-2 glass-box rounded-2xl p-5 flex-col gap-2.5 border border-white/10">
+      <a href="#featured" class="px-3.5 py-2.5 text-xs font-semibold rounded-xl hover:bg-white/10 flex items-center justify-between">
+        <span>Flagship</span><i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+      </a>
+      <a href="#catalog" class="px-3.5 py-2.5 text-xs font-semibold rounded-xl hover:bg-white/10 flex items-center justify-between">
+        <span>Collection</span><i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+      </a>
+      <a href="#spotlight" class="px-3.5 py-2.5 text-xs font-semibold rounded-xl hover:bg-white/10 flex items-center justify-between">
+        <span>Architecture</span><i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+      </a>
+      <a href="#reviews" class="px-3.5 py-2.5 text-xs font-semibold rounded-xl hover:bg-white/10 flex items-center justify-between">
+        <span>Sentiments</span><i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+      </a>
+    </div>
+  </header>
+
+  <section id="featured" class="relative pt-36 pb-24 md:pt-48 md:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        <!-- Left Hero Presentation & Micro-Interactions -->
+        <div class="lg:col-span-7 flex flex-col items-start space-y-6 z-10">
+          
+          <!-- Pulsing badge -->
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-md hover:scale-105 transition-transform duration-300">
+            <span class="w-2 h-2 rounded-full bg-accent-cyan animate-ping"></span>
+            <span class="text-[11px] font-mono font-bold text-accent-cyan uppercase tracking-wider">GEN-IV AERONAUTIC SOUND SYSTEM</span>
+          </div>
+
+          <!-- Staggered Animated Headline -->
+          <h1 class="text-4xl sm:text-6xl md:text-7xl font-display font-black tracking-tight text-white leading-[1.05]">
+            Transcending <br />
+            <span class="bg-gradient-to-r from-accent-cyan via-accent-neon to-accent-pink bg-clip-text text-transparent animated-border bg-[size:200%_auto] inline-block hover:scale-105 transition-transform duration-500">
+              Acoustic Limits.
+            </span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-300 max-w-xl font-normal leading-relaxed">
+            Milled from Grade-5 ballistic titanium and calibrated with 40mm lossless beryllium diaphragms. Experience sensory absolute fidelity engineered for the avant-garde.
+          </p>
+
+          <!-- Interactive Action Buttons -->
+          <div class="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+            <a href="#catalog" class="interactive-elem relative overflow-hidden group w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-accent via-accent-glow to-accent-violet text-white font-bold text-xs uppercase tracking-widest shadow-xl shadow-accent/40 hover:shadow-accent/60 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+              <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 animate-laser-sweep pointer-events-none"></div>
+              <span>Shop Collection</span>
+              <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+            </a>
+
+            <button onclick="openVideoModal()" class="interactive-elem w-full sm:w-auto px-7 py-4 rounded-2xl glass-box hover:bg-white/10 text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2.5 border border-white/15 hover:border-accent-cyan/50 hover:scale-105 active:scale-95 group">
+              <span class="w-7 h-7 rounded-full bg-accent-cyan/20 text-accent-cyan flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="play" class="w-3.5 h-3.5 ml-0.5 fill-accent-cyan"></i>
+              </span>
+              <span>Visual Trailer</span>
+            </button>
+          </div>
+
+          <!-- Animated Metrics Bar with hover lifts -->
+          <div class="pt-8 border-t border-white/10 grid grid-cols-3 gap-6 w-full max-w-lg">
+            <div class="glass-box-subtle p-3 rounded-2xl border border-white/5 hover:border-accent/40 hover:-translate-y-1 transition-all group">
+              <div class="text-2xl sm:text-3xl font-display font-extrabold text-white group-hover:text-accent-cyan transition-colors">45<span class="text-accent-cyan text-base font-mono">h</span></div>
+              <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400 mt-1">ANC Playback</div>
+            </div>
+            <div class="glass-box-subtle p-3 rounded-2xl border border-white/5 hover:border-accent-pink/40 hover:-translate-y-1 transition-all group">
+              <div class="text-2xl sm:text-3xl font-display font-extrabold text-white group-hover:text-accent-pink transition-colors">0.02<span class="text-accent-pink text-base font-mono">s</span></div>
+              <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400 mt-1">Ultra Latency</div>
+            </div>
+            <div class="glass-box-subtle p-3 rounded-2xl border border-white/5 hover:border-accent-violet/40 hover:-translate-y-1 transition-all group">
+              <div class="text-2xl sm:text-3xl font-display font-extrabold text-white group-hover:text-accent-violet transition-colors">100<span class="text-accent-violet text-base font-mono">%</span></div>
+              <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400 mt-1">Grade-5 Ti</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right 3D Interactive Tilt Showcase -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div id="hero-card" class="interactive-elem group relative w-full max-w-md rounded-3xl p-7 glass-box border border-white/20 shadow-2xl shadow-black/90 cursor-grab active:cursor-grabbing transition-transform duration-150">
+            
+            <!-- Dynamic Glare overlay -->
+            <div class="card-glare"></div>
+
+            <!-- Pulsing Ambient Aura Backing -->
+            <div class="absolute -inset-1 bg-gradient-to-r from-accent-cyan via-accent to-accent-pink rounded-3xl blur-2xl opacity-25 group-hover:opacity-75 transition-opacity duration-700 -z-10"></div>
+            
+            <!-- Orbit rings animation -->
+            <div class="absolute inset-0 border border-white/10 rounded-full animate-spin-slow pointer-events-none scale-125 opacity-30"></div>
+            <div class="absolute inset-0 border border-dashed border-accent-cyan/20 rounded-full animate-spin-reverse pointer-events-none scale-110 opacity-40"></div>
+
+            <!-- Card Header -->
+            <div class="flex items-center justify-between mb-4 relative z-20">
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                ACTIVE SHIPMENT
+              </span>
+              <span class="text-[11px] font-mono text-slate-400 uppercase tracking-widest">EDITION 001/500</span>
+            </div>
+
+            <!-- Hero Floating Product Showcase -->
+            <div class="relative py-10 flex items-center justify-center">
+              <img 
+                id="hero-headphone-img"
+                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80" 
+                alt="AETHER Master Headphones" 
+                class="w-72 h-72 object-contain relative z-20 drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] animate-float-slow transition-transform duration-500 group-hover:scale-110"
+              />
+
+              <!-- Floating Micro Tag 1 -->
+              <div class="absolute -right-3 top-8 glass-box py-2 px-3.5 rounded-2xl border border-white/20 shadow-2xl animate-float-delayed flex items-center gap-2.5 z-30">
+                <div class="w-7 h-7 rounded-xl bg-accent-cyan/20 text-accent-cyan flex items-center justify-center font-bold text-xs">
+                  Hi-Fi
+                </div>
+                <div>
+                  <div class="text-[11px] font-bold text-white leading-tight">Lossless 24-Bit</div>
+                  <div class="text-[9px] font-mono text-slate-400">96kHz Stream</div>
+                </div>
+              </div>
+
+              <!-- Floating Micro Tag 2 -->
+              <div class="absolute -left-3 bottom-8 glass-box py-2 px-3.5 rounded-2xl border border-white/20 shadow-2xl animate-float-fast flex items-center gap-2 z-30">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span class="text-[11px] font-bold text-slate-200">Titanium Shell</span>
+              </div>
+            </div>
+
+            <!-- Card Bottom Meta -->
+            <div class="pt-4 border-t border-white/10 flex items-center justify-between relative z-20">
+              <div>
+                <h3 class="text-lg font-display font-black text-white">AETHER Horizon Max</h3>
+                <p class="text-xs font-mono text-slate-400">Midnight Titanium / Obsidian</p>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-display font-extrabold text-white">$389</div>
+                <div class="text-xs font-mono text-slate-500 line-through">$449</div>
+              </div>
+            </div>
+
+            <!-- Instant Fly-to-Cart Trigger -->
+            <button 
+              onclick="triggerAddToCart(1, event)"
+              class="interactive-elem w-full mt-5 py-3.5 rounded-xl bg-white hover:bg-accent-cyan hover:text-dark-950 text-dark-950 font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 shadow-xl active:scale-95 group/btn"
+            >
+              <i data-lucide="sparkles" class="w-4 h-4 group-hover/btn:rotate-45 transition-transform"></i>
+              <span>Claim Priority Allocation</span>
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="py-6 border-y border-white/10 bg-dark-900/60 relative overflow-hidden backdrop-blur-md">
+    <div class="flex overflow-hidden select-none">
+      <div class="flex items-center gap-16 animate-marquee whitespace-nowrap opacity-75 hover:opacity-100 transition-opacity">
+        <span class="text-sm font-mono tracking-widest uppercase text-accent-cyan flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> BERYLLIUM DRIVERS</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-slate-400 flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4"></i> GRADE-5 TITANIUM</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-accent-pink flex items-center gap-2"><i data-lucide="wifi" class="w-4 h-4"></i> ZERO LATENCY DSP</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-slate-400 flex items-center gap-2"><i data-lucide="battery-charging" class="w-4 h-4"></i> 45-HOUR PLAYBACK</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-accent-violet flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> 30-DAY CONCIERGE TRIAL</span>
+        <!-- Repeated for seamless loop -->
+        <span class="text-sm font-mono tracking-widest uppercase text-accent-cyan flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> BERYLLIUM DRIVERS</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-slate-400 flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4"></i> GRADE-5 TITANIUM</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-accent-pink flex items-center gap-2"><i data-lucide="wifi" class="w-4 h-4"></i> ZERO LATENCY DSP</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-slate-400 flex items-center gap-2"><i data-lucide="battery-charging" class="w-4 h-4"></i> 45-HOUR PLAYBACK</span>
+        <span class="text-sm font-mono tracking-widest uppercase text-accent-violet flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> 30-DAY CONCIERGE TRIAL</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="spotlight" class="py-24 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/30 text-accent-neon text-[10px] font-mono uppercase tracking-wider mb-3">
+          <i data-lucide="target" class="w-3.5 h-3.5"></i>
+          Interactive Anatomy
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-display font-black text-white tracking-tight">Internal Sensory Physics</h2>
+        <p class="text-slate-400 text-sm mt-3">Hover or trigger any illuminated coordinate radar to inspect our patented micro-acoustic architecture.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-box rounded-3xl p-6 sm:p-12 border border-white/10 relative">
+        
+        <!-- Interactive Stage with pulsating hotspots -->
+        <div class="lg:col-span-7 relative flex items-center justify-center min-h-[400px]">
+          <div class="absolute inset-0 bg-gradient-to-tr from-accent/20 via-accent-cyan/10 to-transparent blur-3xl rounded-full"></div>
+          
+          <img 
+            id="hotspot-main-image"
+            src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80" 
+            alt="Acoustic Breakdown"
+            class="w-full max-w-lg max-h-[420px] object-contain relative z-10 transition-all duration-700 filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
+          />
+
+          <!-- HOTSPOT 1: Beryllium Drivers -->
+          <div class="absolute top-[28%] left-[28%] z-20 group">
+            <button 
+              onclick="activateHotspot(0)"
+              class="interactive-elem relative w-9 h-9 rounded-full bg-accent-cyan text-dark-950 font-mono font-bold text-xs flex items-center justify-center shadow-lg shadow-cyan-500/50 hover:scale-125 transition-transform radar-pulse"
+            >
+              01
+            </button>
+            <div class="absolute left-12 -top-10 w-56 glass-box p-3.5 rounded-2xl border border-accent-cyan/40 shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform group-hover:translate-x-2">
+              <h4 class="text-xs font-bold text-accent-cyan">40mm Pure Beryllium Diaphragm</h4>
+              <p class="text-[11px] text-slate-300 mt-1">4x stiffness of titanium for pristine zero-resonance treble extension.</p>
+            </div>
+          </div>
+
+          <!-- HOTSPOT 2: Adaptive Active ANC -->
+          <div class="absolute top-[48%] right-[28%] z-20 group">
+            <button 
+              onclick="activateHotspot(1)"
+              class="interactive-elem relative w-9 h-9 rounded-full bg-accent-pink text-white font-mono font-bold text-xs flex items-center justify-center shadow-lg shadow-pink-500/50 hover:scale-125 transition-transform radar-pulse"
+            >
+              02
+            </button>
+            <div class="absolute right-12 -top-10 w-56 glass-box p-3.5 rounded-2xl border border-accent-pink/40 shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform group-hover:-translate-x-2 text-right">
+              <h4 class="text-xs font-bold text-accent-pink">Neural ANC Matrix</h4>
+              <p class="text-[11px] text-slate-300 mt-1">Dual high-speed feedback microphones attenuating noise by -42dB.</p>
+            </div>
+          </div>
+
+          <!-- HOTSPOT 3: Bio-Protein Memory Cloud -->
+          <div class="absolute bottom-[20%] left-[45%] z-20 group">
+            <button 
+              onclick="activateHotspot(2)"
+              class="interactive-elem relative w-9 h-9 rounded-full bg-accent-violet text-white font-mono font-bold text-xs flex items-center justify-center shadow-lg shadow-purple-500/50 hover:scale-125 transition-transform radar-pulse"
+            >
+              03
+            </button>
+            <div class="absolute left-12 -top-10 w-56 glass-box p-3.5 rounded-2xl border border-accent-violet/40 shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform group-hover:translate-x-2">
+              <h4 class="text-xs font-bold text-purple-300">Bio-Protein Ear Cushions</h4>
+              <p class="text-[11px] text-slate-300 mt-1">Thermal-reactive memory core with breathable vegan leather shield.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side Hotspot Active Details Tab with Audio Wave Animation -->
+        <div class="lg:col-span-5 flex flex-col justify-between h-full space-y-6">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-bold text-accent-cyan uppercase tracking-wider flex items-center gap-2">
+                <i data-lucide="radio" class="w-4 h-4 animate-pulse"></i>
+                DSP REAL-TIME ANALYSIS
+              </span>
+              
+              <!-- Animated Equalizer Bars -->
+              <div class="flex items-end gap-1 h-5">
+                <span class="w-1 bg-accent-cyan rounded-full animate-sound-wave" style="animation-delay: 0.1s"></span>
+                <span class="w-1 bg-accent rounded-full animate-sound-wave" style="animation-delay: 0.4s"></span>
+                <span class="w-1 bg-accent-pink rounded-full animate-sound-wave" style="animation-delay: 0.2s"></span>
+                <span class="w-1 bg-accent-violet rounded-full animate-sound-wave" style="animation-delay: 0.5s"></span>
+                <span class="w-1 bg-accent-cyan rounded-full animate-sound-wave" style="animation-delay: 0.3s"></span>
+              </div>
+            </div>
+
+            <h3 id="hotspot-detail-title" class="text-2xl sm:text-3xl font-display font-black text-white transition-all duration-300">
+              40mm Pure Beryllium Diaphragm
+            </h3>
+            <p id="hotspot-detail-desc" class="text-slate-300 text-sm mt-3 leading-relaxed transition-all duration-300">
+              Engineered using vapor-deposited beryllium foil for instantaneous acoustic impulse response. Preserves micro-dynamics and vocal realism with less than 0.05% harmonic coloration.
+            </p>
+          </div>
+
+          <!-- Feature Breakdown Specs list -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3.5 rounded-2xl glass-box-subtle border border-white/5 hover:border-white/20 transition-all">
+              <span class="text-xs font-mono text-slate-400">Total Harmonic Distortion</span>
+              <span class="text-xs font-mono font-bold text-white">&lt; 0.03% @ 1kHz</span>
+            </div>
+            <div class="flex items-center justify-between p-3.5 rounded-2xl glass-box-subtle border border-white/5 hover:border-white/20 transition-all">
+              <span class="text-xs font-mono text-slate-400">Noise Cancellation Depth</span>
+              <span class="text-xs font-mono font-bold text-accent-cyan">-42 dB Neural</span>
+            </div>
+            <div class="flex items-center justify-between p-3.5 rounded-2xl glass-box-subtle border border-white/5 hover:border-white/20 transition-all">
+              <span class="text-xs font-mono text-slate-400">Battery Endurance</span>
+              <span class="text-xs font-mono font-bold text-emerald-400">45 Hours Continuous</span>
+            </div>
+          </div>
+
+          <!-- Action Add to Bag -->
+          <div class="pt-4 border-t border-white/10 flex items-center gap-4">
+            <button 
+              onclick="triggerAddToCart(1, event)"
+              class="interactive-elem flex-1 py-4 rounded-xl bg-gradient-to-r from-accent-cyan via-accent to-accent-violet hover:opacity-90 text-dark-950 font-display font-bold text-xs uppercase tracking-wider transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2"
+            >
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Acquire Master Headphone — $389</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="catalog" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      
+      <!-- Catalog Header and Sliding Category Filter -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-pink/10 border border-accent-pink/30 text-accent-pink text-[10px] font-mono uppercase tracking-wider mb-2">
+            <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+            CURATED ARCHIVE
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-display font-black text-white tracking-tight">Tactical Performance Gear</h2>
+        </div>
+
+        <!-- Animated Filter category pills with sliding underline indicator -->
+        <div id="filter-bar" class="flex items-center gap-1.5 p-1.5 glass-box rounded-2xl overflow-x-auto max-w-full relative">
+          <button onclick="handleFilterChange('all', this)" class="category-btn px-4 py-2 rounded-xl text-xs font-bold bg-accent text-white transition-all whitespace-nowrap shadow-lg interactive-elem">
+            All Hardware
+          </button>
+          <button onclick="handleFilterChange('audio', this)" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap interactive-elem">
+            Audio
+          </button>
+          <button onclick="handleFilterChange('wearables', this)" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap interactive-elem">
+            Wearables
+          </button>
+          <button onclick="handleFilterChange('footwear', this)" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap interactive-elem">
+            Footwear
+          </button>
+          <button onclick="handleFilterChange('essentials', this)" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap interactive-elem">
+            Essentials
+          </button>
+        </div>
+      </div>
+
+      <!-- Dynamic Staggered Products Grid -->
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-7">
+        <!-- Rendered by JavaScript dynamically -->
+      </div>
+
+    </div>
+  </section>
+
+  <section class="py-20 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      <div class="relative glass-box rounded-3xl p-8 sm:p-14 border border-accent-cyan/30 overflow-hidden shadow-2xl">
+        
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-accent-cyan/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute -left-20 -top-20 w-96 h-96 bg-accent-pink/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          
+          <div class="lg:col-span-7 space-y-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-pink/20 text-accent-pink border border-accent-pink/30 text-xs font-mono font-bold uppercase tracking-wider">
+              <i data-lucide="flame" class="w-3.5 h-3.5"></i> Limited Production Run 04
+            </span>
+            <h3 class="text-3xl sm:text-5xl font-display font-black text-white tracking-tight">
+              Midnight Carbon Edition <br />
+              <span class="text-accent-cyan">Save $100 This Weekend</span>
+            </h3>
+            <p class="text-slate-300 text-sm max-w-lg leading-relaxed">
+              Every order placed during this cycle receives complimentary custom laser initials, aircraft carry-case, and 3-year platinum loss protection.
+            </p>
+          </div>
+
+          <!-- Animated Flip Countdown Numbers -->
+          <div class="lg:col-span-5 flex flex-col items-center lg:items-end space-y-5">
+            <div class="grid grid-cols-4 gap-3 text-center w-full max-w-sm">
+              <div class="glass-box-subtle p-3 rounded-2xl border border-white/10">
+                <span id="timer-hours" class="text-2xl sm:text-3xl font-mono font-extrabold text-white block">14</span>
+                <span class="text-[9px] font-mono uppercase text-slate-400">Hours</span>
+              </div>
+              <div class="glass-box-subtle p-3 rounded-2xl border border-white/10">
+                <span id="timer-minutes" class="text-2xl sm:text-3xl font-mono font-extrabold text-white block">48</span>
+                <span class="text-[9px] font-mono uppercase text-slate-400">Mins</span>
+              </div>
+              <div class="glass-box-subtle p-3 rounded-2xl border border-white/10">
+                <span id="timer-seconds" class="text-2xl sm:text-3xl font-mono font-extrabold text-accent-cyan block animate-pulse">22</span>
+                <span class="text-[9px] font-mono uppercase text-slate-400">Secs</span>
+              </div>
+              <div class="glass-box-subtle p-3 rounded-2xl border border-white/10">
+                <span id="timer-millis" class="text-2xl sm:text-3xl font-mono font-extrabold text-accent-pink block">89</span>
+                <span class="text-[9px] font-mono uppercase text-slate-400">MS</span>
+              </div>
+            </div>
+
+            <!-- Magnetic Claim Button -->
+            <button 
+              onclick="triggerAddToCart(3, event)"
+              class="interactive-elem w-full max-w-sm py-4 rounded-xl bg-gradient-to-r from-accent-pink via-accent to-accent-cyan text-white font-display font-bold text-xs uppercase tracking-wider shadow-xl shadow-pink-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <i data-lucide="zap" class="w-4 h-4 fill-white"></i>
+              <span>Claim Priority Deal</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews" class="py-24 bg-dark-900/40 border-t border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 mb-14 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-violet/10 border border-accent-violet/30 text-accent-violet text-[10px] font-mono uppercase tracking-wider mb-2">
+        <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Global Endorsements
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-display font-black text-white tracking-tight">Validated by Sound Purists</h2>
+    </div>
+
+    <!-- Continuous Marquee Carousel Row 1 -->
+    <div class="flex overflow-hidden py-3 select-none">
+      <div class="flex items-center gap-6 animate-marquee whitespace-normal hover:[animation-play-state:paused]">
+        
+        <!-- Review 1 -->
+        <div class="w-80 sm:w-96 glass-box p-6 rounded-3xl border border-white/10 hover:border-accent-cyan/50 transition-all flex-shrink-0">
+          <div class="flex items-center gap-1 text-amber-400 mb-3">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <span class="text-xs font-mono font-bold text-slate-300 ml-2">5.0</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed italic mb-4">
+            "The AETHER Pro Max replaced both my studio mastering headphones and travel gear. Titanium craftsmanship is flawless."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Elena" class="w-9 h-9 rounded-full object-cover ring-2 ring-accent-cyan" />
+            <div>
+              <h4 class="text-xs font-bold text-white">Elena Rostova</h4>
+              <p class="text-[10px] font-mono text-slate-400">Mastering Engineer, Berlin</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="w-80 sm:w-96 glass-box p-6 rounded-3xl border border-white/10 hover:border-accent-pink/50 transition-all flex-shrink-0">
+          <div class="flex items-center gap-1 text-amber-400 mb-3">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <span class="text-xs font-mono font-bold text-slate-300 ml-2">5.0</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed italic mb-4">
+            "The Nova Chrono battery life genuinely lasts 14 days without sacrificing display sharpness. Next level industrial design."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Marcus" class="w-9 h-9 rounded-full object-cover ring-2 ring-accent-pink" />
+            <div>
+              <h4 class="text-xs font-bold text-white">Marcus Chen</h4>
+              <p class="text-[10px] font-mono text-slate-400">Architect, San Francisco</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="w-80 sm:w-96 glass-box p-6 rounded-3xl border border-white/10 hover:border-accent-violet/50 transition-all flex-shrink-0">
+          <div class="flex items-center gap-1 text-amber-400 mb-3">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <span class="text-xs font-mono font-bold text-slate-300 ml-2">5.0</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed italic mb-4">
+            "Speed of delivery to Tokyo was under 48 hours. Unboxing feels like opening high jewelry from the year 2045."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Sora" class="w-9 h-9 rounded-full object-cover ring-2 ring-accent-violet" />
+            <div>
+              <h4 class="text-xs font-bold text-white">Sora Takahashi</h4>
+              <p class="text-[10px] font-mono text-slate-400">Creative Technologist, Tokyo</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 4 -->
+        <div class="w-80 sm:w-96 glass-box p-6 rounded-3xl border border-white/10 hover:border-emerald-400/50 transition-all flex-shrink-0">
+          <div class="flex items-center gap-1 text-amber-400 mb-3">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+            <span class="text-xs font-mono font-bold text-slate-300 ml-2">5.0</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed italic mb-4">
+            "Veloce runners carbon plate has propelled my half marathon personal record by 4 minutes. A piece of art."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="Julian" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-400" />
+            <div>
+              <h4 class="text-xs font-bold text-white">Julian Vance</h4>
+              <p class="text-[10px] font-mono text-slate-400">Triathlete, Melbourne</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="cart-drawer-backdrop" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300"></div>
+  
+  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-dark-950/95 backdrop-blur-2xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    
+    <!-- Header -->
+    <div class="p-6 border-b border-white/10 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-accent-cyan"></i>
+        <h3 class="font-display font-black text-lg text-white">Allocated Bag</h3>
+        <span id="drawer-item-count" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent/20 text-accent-neon border border-accent/30">0 items</span>
+      </div>
+      <button id="close-cart-btn" class="interactive-elem w-8 h-8 rounded-full hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Free Shipping Progress Meter with confetti trigger at $200 -->
+    <div class="px-6 py-3.5 bg-dark-900/80 border-b border-white/5">
+      <div class="flex items-center justify-between text-xs mb-1.5">
+        <span id="shipping-prompt" class="text-slate-300 font-medium">Add $200 more for Free Worldwide Courier</span>
+        <span id="shipping-percent" class="text-accent-cyan font-mono font-bold">0%</span>
+      </div>
+      <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div id="shipping-bar" class="h-full bg-gradient-to-r from-accent via-accent-cyan to-accent-pink transition-all duration-500 rounded-full" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Items Scrollable Container -->
+    <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Generated dynamically -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-cart-state" class="hidden flex-1 flex-col items-center justify-center p-8 text-center space-y-4">
+      <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-slate-500 animate-bounce">
+        <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-white font-display">Your bag is vacant</h4>
+        <p class="text-xs text-slate-400 mt-1">Discover handcrafted aerospace items in our catalog.</p>
+      </div>
+      <button onclick="closeCart();" class="interactive-elem px-6 py-3 rounded-xl bg-accent hover:bg-accent-neon text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg active:scale-95">
+        Start Exploring
+      </button>
+    </div>
+
+    <!-- Drawer Footer / Checkout -->
+    <div class="p-6 border-t border-white/10 bg-dark-900/80 space-y-4">
+      
+      <!-- Promo code toggle -->
+      <div class="flex gap-2">
+        <input 
+          id="coupon-input" 
+          type="text" 
+          placeholder="Promo Code (Use 'AETHER10')" 
+          class="flex-1 glass-box-subtle rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 outline-none uppercase font-mono interactive-elem focus:ring-1 focus:ring-accent-cyan"
+        />
+        <button onclick="applyCoupon()" class="interactive-elem px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold font-mono text-white transition-all active:scale-95">
+          Verify
+        </button>
+      </div>
+      <div id="coupon-feedback" class="text-[11px] font-mono hidden"></div>
+
+      <!-- Pricing Summary -->
+      <div class="space-y-1.5 text-xs font-mono">
+        <div class="flex justify-between text-slate-400">
+          <span>Subtotal</span>
+          <span id="cart-subtotal" class="text-white font-bold">$0.00</span>
+        </div>
+        <div class="flex justify-between text-slate-400">
+          <span>Aeronautic Courier</span>
+          <span id="cart-shipping" class="text-emerald-400 font-bold">Complimentary</span>
+        </div>
+        <div id="discount-row" class="hidden justify-between text-accent-cyan">
+          <span>VIP Discount</span>
+          <span id="cart-discount">-$0.00</span>
+        </div>
+        <div class="flex justify-between text-base font-bold font-display text-white pt-2 border-t border-white/10">
+          <span>Total Allocation</span>
+          <span id="cart-total">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Animated Checkout Button -->
+      <button 
+        onclick="initiateCheckout()" 
+        id="checkout-btn"
+        class="interactive-elem relative overflow-hidden w-full py-4 rounded-xl bg-gradient-to-r from-accent via-accent-cyan to-accent-pink text-dark-950 font-display font-extrabold text-xs uppercase tracking-widest shadow-xl shadow-accent/25 hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-2 group"
+      >
+        <div class="absolute inset-0 w-1/2 h-full bg-white/30 skew-x-12 animate-laser-sweep pointer-events-none"></div>
+        <span>Finalize Encryption Checkout</span>
+        <i data-lucide="lock" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
+      </button>
+
+      <p class="text-[10px] text-center text-slate-500 font-mono flex items-center justify-center gap-1.5">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>256-BIT QUANTUM VAULT ENCRYPTED</span>
+      </p>
+    </div>
+
+  </div>
+
+  <div id="quickview-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div id="quickview-panel" class="glass-box w-full max-w-4xl rounded-3xl overflow-hidden border border-white/20 shadow-2xl transform scale-90 transition-all duration-300 relative">
+      
+      <button onclick="closeQuickView()" class="interactive-elem absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- Showcase Stage -->
+        <div class="p-8 bg-dark-900/90 flex flex-col items-center justify-center relative">
+          <div class="w-64 h-64 rounded-full bg-accent/20 blur-3xl absolute"></div>
+          <img id="qv-image" src="" alt="Product" class="max-h-72 object-contain relative z-10 drop-shadow-2xl transition-all duration-500 hover:scale-105" />
+          
+          <div class="flex gap-2.5 mt-6 relative z-10" id="qv-thumbnails">
+            <!-- populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="p-8 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span id="qv-category" class="text-xs font-mono font-bold text-accent-cyan uppercase tracking-wider">AUDIO</span>
+              <div class="flex items-center text-amber-400 text-xs">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 mr-1"></i>
+                <span id="qv-rating" class="font-bold text-slate-200">4.9</span>
+                <span class="text-slate-500 font-mono text-[10px] ml-1">(240 reviews)</span>
+              </div>
+            </div>
+
+            <h3 id="qv-title" class="text-2xl font-display font-black text-white mt-2">Product Title</h3>
+            <div class="text-2xl font-display font-extrabold text-white mt-1" id="qv-price">$0</div>
+
+            <p id="qv-description" class="text-xs text-slate-300 mt-4 leading-relaxed">
+              Description details.
+            </p>
+
+            <!-- Color Palette selection with pulse indicator -->
+            <div class="mt-6">
+              <label class="text-xs font-mono font-bold text-slate-300 block mb-2">Available Anodized Finish:</label>
+              <div class="flex items-center gap-3" id="qv-colors">
+                <!-- dynamic color swatches -->
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-6 flex flex-wrap gap-2" id="qv-tags">
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">Grade 5 Titanium</span>
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">DSP 5.4</span>
+              <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">3-Yr Guarantee</span>
+            </div>
+          </div>
+
+          <!-- Quantity Stepper & Instant Add -->
+          <div class="pt-6 border-t border-white/10 flex items-center gap-4 mt-6">
+            <div class="flex items-center glass-box-subtle rounded-xl px-2 py-1">
+              <button onclick="decrementQvQuantity()" class="interactive-elem w-7 h-7 rounded-lg hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs">-</button>
+              <span id="qv-quantity" class="w-8 text-center text-xs font-mono font-bold text-white">1</span>
+              <button onclick="incrementQvQuantity()" class="interactive-elem w-7 h-7 rounded-lg hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs">+</button>
+            </div>
+
+            <button id="qv-add-btn" class="interactive-elem flex-1 py-3.5 rounded-xl bg-gradient-to-r from-accent to-accent-cyan text-white font-display font-bold text-xs uppercase tracking-wider transition-all shadow-xl shadow-accent/30 active:scale-95 flex items-center justify-center gap-2">
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+              <span>Add to Allocation</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="glass-box w-full max-w-3xl rounded-3xl p-6 border border-white/20 shadow-2xl relative text-center">
+      <button onclick="closeVideoModal()" class="interactive-elem absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div class="aspect-video w-full rounded-2xl bg-dark-900 flex flex-col items-center justify-center border border-white/10 relative overflow-hidden group">
+        <div class="absolute inset-0 bg-gradient-to-tr from-accent/30 via-accent-cyan/20 to-accent-pink/20 animate-pulse"></div>
+        <div class="w-16 h-16 rounded-full bg-accent-cyan text-dark-950 flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 transition-transform">
+          <i data-lucide="play" class="w-7 h-7 ml-1 fill-dark-950"></i>
+        </div>
+        <h4 class="text-xl font-display font-black text-white relative z-10">AETHER Industrial Craftsmanship</h4>
+        <p class="text-xs font-mono text-slate-400 relative z-10 mt-1">4K Lossless Audio & Visual Showcase</p>
+      </div>
+      <p class="text-xs text-slate-400 mt-4 font-mono">Simulated cinematic theater for Gen-IV flagship sound system.</p>
+    </div>
+  </div>
+
+  <!-- Back to Top with SVG Circular Scroll Progress Ring -->
+  <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="interactive-elem fixed bottom-6 left-6 z-40 w-12 h-12 rounded-full glass-box border border-white/20 flex items-center justify-center text-slate-300 hover:text-white transition-all duration-300 opacity-0 pointer-events-none hover:scale-110 shadow-2xl">
+    <svg class="w-12 h-12 -rotate-90 pointer-events-none absolute inset-0">
+      <circle cx="24" cy="24" r="20" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2.5" fill="none" />
+      <circle id="scroll-progress-ring" cx="24" cy="24" r="20" stroke="#06b6d4" stroke-width="2.5" stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round" fill="none" class="transition-all duration-150" />
+    </svg>
+    <i data-lucide="arrow-up" class="w-4 h-4 relative z-10"></i>
+  </button>
+
+  <!-- Interactive Toast Notification System -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 glass-box border border-accent-cyan/50 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3.5 transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300">
+    <div id="toast-icon-wrapper" class="w-8 h-8 rounded-xl bg-accent-cyan text-dark-950 flex items-center justify-center font-bold flex-shrink-0 animate-bounce">
+      <i data-lucide="check" class="w-4 h-4"></i>
+    </div>
+    <div>
+      <h5 id="toast-title" class="text-xs font-display font-bold text-white">Item added to bag</h5>
+      <p id="toast-message" class="text-[11px] font-mono text-slate-300">AETHER Pro Max</p>
+    </div>
+  </div>
+
+  <footer class="pt-20 pb-12 border-t border-white/10 bg-dark-950 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      
+      <!-- Newsletter VIP Section -->
+      <div class="glass-box p-8 sm:p-12 rounded-3xl border border-white/10 relative overflow-hidden mb-16 shadow-2xl">
+        <div class="absolute right-0 top-0 w-96 h-96 bg-accent-cyan/15 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="relative z-10 max-w-xl">
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-accent-cyan">STAY REFINED</span>
+          <h3 class="text-2xl sm:text-4xl font-display font-black text-white mt-1">Join the AETHER Inner Syndicate</h3>
+          <p class="text-xs sm:text-sm text-slate-400 mt-2">Gain early access to limited aerospace drops, private acoustic lab testing, and private exhibition invites.</p>
+          
+          <form onsubmit="handleNewsletter(event)" class="mt-6 flex flex-col sm:flex-row gap-3">
+            <input 
+              id="newsletter-email" 
+              type="email" 
+              required
+              placeholder="Enter your confidential email" 
+              class="glass-box-subtle rounded-xl px-4 py-3.5 text-xs text-white placeholder-slate-500 outline-none flex-1 focus:ring-2 focus:ring-accent-cyan interactive-elem font-mono"
+            />
+            <button type="submit" class="interactive-elem px-7 py-3.5 rounded-xl bg-white hover:bg-accent-cyan hover:text-dark-950 text-dark-950 font-display font-bold text-xs uppercase tracking-wider transition-all active:scale-95 shadow-lg">
+              Synchronize
+            </button>
+          </form>
+          <div id="newsletter-status" class="text-xs text-emerald-400 mt-2 hidden flex items-center gap-1.5 font-mono">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+            <span>Encrypted invitation dispatched to your inbox.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Links Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-white/5">
+        
+        <div class="col-span-2 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-white">
+              <i data-lucide="zap" class="w-5 h-5 text-accent-cyan"></i>
+            </div>
+            <span class="font-display font-black text-lg text-white">AETHER LABS</span>
+          </div>
+          <p class="text-xs text-slate-400 max-w-sm leading-relaxed">
+            Pioneering sensory equipment, wearable micro-engineering, and urban tactical gear designed for forward thinkers.
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <a href="#" class="interactive-elem w-8 h-8 rounded-lg glass-box flex items-center justify-center text-slate-400 hover:text-white hover:border-accent-cyan transition-all"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            <a href="#" class="interactive-elem w-8 h-8 rounded-lg glass-box flex items-center justify-center text-slate-400 hover:text-white hover:border-accent-pink transition-all"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#" class="interactive-elem w-8 h-8 rounded-lg glass-box flex items-center justify-center text-slate-400 hover:text-white hover:border-accent-violet transition-all"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">Catalog</h5>
+          <ul class="space-y-2 text-xs text-slate-400">
+            <li><a href="#catalog" class="hover:text-accent-cyan transition-colors interactive-elem">Titanium Audio</a></li>
+            <li><a href="#catalog" class="hover:text-accent-cyan transition-colors interactive-elem">Smart Chronographs</a></li>
+            <li><a href="#catalog" class="hover:text-accent-cyan transition-colors interactive-elem">Kinetic Runners</a></li>
+            <li><a href="#catalog" class="hover:text-accent-cyan transition-colors interactive-elem">Modular Wallets</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">Innovation</h5>
+          <ul class="space-y-2 text-xs text-slate-400">
+            <li><a href="#spotlight" class="hover:text-accent-cyan transition-colors interactive-elem">Beryllium DSP</a></li>
+            <li><a href="#spotlight" class="hover:text-accent-cyan transition-colors interactive-elem">Grade-5 Metallurgy</a></li>
+            <li><a href="#spotlight" class="hover:text-accent-cyan transition-colors interactive-elem">Aero Noise Attenuation</a></li>
+            <li><a href="#spotlight" class="hover:text-accent-cyan transition-colors interactive-elem">Firmware Over-Air</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">Concierge</h5>
+          <ul class="space-y-2 text-xs text-slate-400">
+            <li><a href="#" class="hover:text-accent-cyan transition-colors interactive-elem">Vault Tracking</a></li>
+            <li><a href="#" class="hover:text-accent-cyan transition-colors interactive-elem">3-Year Guarantee</a></li>
+            <li><a href="#" class="hover:text-accent-cyan transition-colors interactive-elem">30-Day Evaluation</a></li>
+            <li><a href="#" class="hover:text-accent-cyan transition-colors interactive-elem">Recycling Exchange</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-500 gap-4">
+        <div>&copy; 2026 AETHER Lifestyle Technologies Inc. All rights reserved.</div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="hover:text-slate-400 interactive-elem">Privacy Policy</a>
+          <a href="#" class="hover:text-slate-400 interactive-elem">Terms of Service</a>
+          <a href="#" class="hover:text-slate-400 interactive-elem">Cryptographic Compliance</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================================
+       1. DATA DEFINITIONS & STATE MANAGEMENT
+       ========================================================================= */
+    const PRODUCTS = [
+      {
+        id: 1,
+        name: "AETHER Pro Max ANC",
+        category: "audio",
+        price: 389,
+        rating: 4.9,
+        reviewsCount: 320,
+        badge: "Flagship",
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#1e293b", "#e2e8f0", "#6366f1"],
+        description: "Studio-grade titanium wireless headphone equipped with quad-microphone Hybrid Active Noise Cancellation and lossless 24-bit wireless Bluetooth 5.4 streaming."
+      },
+      {
+        id: 2,
+        name: "Nova Chrono Gen 3",
+        category: "wearables",
+        price: 329,
+        rating: 4.8,
+        reviewsCount: 198,
+        badge: "Popular",
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#0f172a", "#94a3b8", "#d97706"],
+        description: "Sapphire glass smartwatch boasting 14 days continuous battery, precision ECG sensors, ambient depth meter, and sculpted aeronautic titanium frame."
+      },
+      {
+        id: 3,
+        name: "Veloce Kinetic Runners",
+        category: "footwear",
+        price: 219,
+        rating: 4.9,
+        reviewsCount: 142,
+        badge: "New",
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#ef4444", "#09090b", "#ffffff"],
+        description: "Propulsive carbon-fiber plate running shoes with high-rebound supercritical nitrogen-infused foam for effortless forward drive."
+      },
+      {
+        id: 4,
+        name: "Aura Pods Pro",
+        category: "audio",
+        price: 199,
+        rating: 4.7,
+        reviewsCount: 412,
+        badge: "Sale",
+        image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#ffffff", "#1e293b"],
+        description: "Featherlight true wireless earbuds featuring spatial audio head tracking and custom 11mm magnetic drivers in an IPX6 waterproof pod."
+      },
+      {
+        id: 5,
+        name: "Modulor Tactical Backpack",
+        category: "essentials",
+        price: 185,
+        rating: 4.9,
+        reviewsCount: 98,
+        badge: "Limited",
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#1e293b", "#334155"],
+        description: "Weatherproof Cordura 1000D magnetic modular backpack with padded 16-inch laptop cocoon and Fidlock magnetic buckle systems."
+      },
+      {
+        id: 6,
+        name: "Prism Horizon Shades",
+        category: "essentials",
+        price: 165,
+        rating: 4.6,
+        reviewsCount: 76,
+        badge: "Trending",
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#0284c7", "#09090b", "#d97706"],
+        description: "Japanese titanium wire-frame polarized shades engineered with anti-reflective oleophobic coatings for optimal UV400 clarity."
+      },
+      {
+        id: 7,
+        name: "Pulse Smart Band Slim",
+        category: "wearables",
+        price: 149,
+        rating: 4.7,
+        reviewsCount: 165,
+        badge: "Eco",
+        image: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#10b981", "#1e293b", "#8b5cf6"],
+        description: "Subtle biometric health monitor tracking HRV, skin temperature, and sleep phases with 100% recycled nylon woven strap."
+      },
+      {
+        id: 8,
+        name: "Strata Minimalist Wallet",
+        category: "essentials",
+        price: 79,
+        rating: 4.9,
+        reviewsCount: 310,
+        badge: "Bestseller",
+        image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800&auto=format&fit=crop&q=80",
+        thumbnails: [
+          "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800&auto=format&fit=crop&q=80"
+        ],
+        colors: ["#1e1e24", "#71717a", "#4338ca"],
+        description: "RFID-blocking aerospace aluminum chassis wallet with rapid push-lever card ejection holding up to 12 cards and cash strap."
+      }
+    ];
+
+    const HOTSPOTS = [
+      {
+        title: "40mm Pure Beryllium Diaphragm",
+        desc: "Engineered using vapor-deposited beryllium foil for instantaneous acoustic impulse response. Preserves micro-dynamics and vocal realism with less than 0.05% harmonic coloration."
+      },
+      {
+        title: "Neural Active ANC Matrix",
+        desc: "Quadruple feedforward and internal feedback microphones sampling background disturbances 40,000x per second to cancel ambient frequencies up to -42dB."
+      },
+      {
+        title: "Bio-Protein Cloud Cushions",
+        desc: "Constructed with human thermal response memory foam wrapped in ultra-breathable, vegan bio-protein membrane for fatigue-free all-day wear."
+      }
+    ];
+
+    let cart = [];
+    let wishlist = [];
+    let appliedDiscount = 0;
+    let quickViewItem = null;
+    let quickViewQty = 1;
+    let hasTriggeredConfetti = false;
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderProductsGrid(PRODUCTS);
+      setupCustomCursor();
+      setupNavbarPill();
+      setupCardTilts();
+      setupLiveSearch();
+      setupCartDrawer();
+      setupCountdownTimer();
+      setupScrollProgress();
+    });
+
+    /* =========================================================================
+       2. DYNAMIC CUSTOM CURSOR WITH TRAILING & HOVER MAGNETISM
+       ========================================================================= */
+    function setupCustomCursor() {
+      const dot = document.getElementById('custom-cursor-dot');
+      const ring = document.getElementById('custom-cursor-ring');
+      if (!dot || !ring) return;
+
+      let mouseX = 0, mouseY = 0;
+      let ringX = 0, ringY = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.left = `${mouseX}px`;
+        dot.style.top = `${mouseY}px`;
+      });
+
+      // Smooth Lerp for ring
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.18;
+        ringY += (mouseY - ringY) * 0.18;
+        ring.style.left = `${ringX}px`;
+        ring.style.top = `${ringY}px`;
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      // Magnetic hover scaling
+      const updateHoverTargets = () => {
+        document.querySelectorAll('a, button, input, .interactive-elem').forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+          el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+      };
+      updateHoverTargets();
+      window.refreshCursorTargets = updateHoverTargets;
+    }
+
+    /* =========================================================================
+       3. NAVBAR SLIDING ACTIVE PILL INDICATOR
+       ========================================================================= */
+    function setupNavbarPill() {
+      const navContainer = document.getElementById('nav-container');
+      const pill = document.getElementById('nav-pill');
+      const links = document.querySelectorAll('.nav-link');
+
+      links.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+          const rect = link.getBoundingClientRect();
+          const parentRect = navContainer.getBoundingClientRect();
+          pill.style.width = `${rect.width}px`;
+          pill.style.left = `${rect.left - parentRect.left}px`;
+          pill.style.opacity = '1';
+        });
+      });
+
+      navContainer.addEventListener('mouseleave', () => {
+        pill.style.opacity = '0';
+      });
+
+      // Mobile Menu
+      const mobileBtn = document.getElementById('mobile-menu-btn');
+      const mobileNav = document.getElementById('mobile-nav');
+      mobileBtn.addEventListener('click', () => {
+        mobileNav.classList.toggle('hidden');
+        mobileNav.classList.toggle('flex');
+      });
+    }
+
+    /* =========================================================================
+       4. 3D TILT EFFECT & HOLOGRAPHIC GLARE
+       ========================================================================= */
+    function setupCardTilts() {
+      const cards = document.querySelectorAll('.card-tilt, #hero-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -10;
+          const rotateY = ((x - centerX) / centerX) * 10;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+      });
+    }
+
+    /* =========================================================================
+       5. PRODUCT GRID RENDERING & FILTERING
+       ========================================================================= */
+    function renderProductsGrid(items) {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = '';
+
+      if (items.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center">
+            <p class="text-slate-400 text-sm font-mono">No matching items found.</p>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach((product, idx) => {
+        const isWishlisted = wishlist.includes(product.id);
+        const card = document.createElement('div');
+        card.className = "card-tilt group relative glass-box rounded-3xl p-5 border border-white/10 hover:border-accent-cyan/50 transition-all duration-300 flex flex-col justify-between hover:-translate-y-2 shadow-xl hover:shadow-2xl hover:shadow-accent-cyan/10 opacity-0 translate-y-6";
+        card.style.animation = `fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 0.08}s forwards`;
+
+        card.innerHTML = `
+          <div class="card-glare"></div>
+
+          <div>
+            <!-- Top Tag row -->
+            <div class="flex items-center justify-between mb-3 relative z-20">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase ${getBadgeStyle(product.badge)}">
+                ${product.badge}
+              </span>
+              <button 
+                onclick="toggleWishlist(${product.id}, this, event)" 
+                class="interactive-elem w-8 h-8 rounded-full glass-box-subtle hover:bg-white/20 text-slate-300 hover:text-accent-pink flex items-center justify-center transition-all ${isWishlisted ? 'text-accent-pink' : ''}"
+              >
+                <i data-lucide="heart" class="w-4 h-4 ${isWishlisted ? 'fill-accent-pink' : ''}"></i>
+              </button>
+            </div>
+
+            <!-- Product Image Preview with Hover Reveal -->
+            <div class="relative py-6 flex items-center justify-center overflow-hidden rounded-2xl bg-dark-900/60 cursor-pointer" onclick="openQuickView(${product.id})">
+              <div class="w-36 h-36 rounded-full bg-accent-cyan/10 blur-xl absolute group-hover:scale-150 transition-transform duration-500"></div>
+              <img 
+                id="product-img-${product.id}"
+                src="${product.image}" 
+                alt="${product.name}" 
+                class="w-44 h-44 object-contain relative z-10 transition-transform duration-500 group-hover:scale-110 drop-shadow-lg"
+              />
+              
+              <!-- Quick View Floating Button on Hover -->
+              <div class="absolute inset-0 bg-dark-950/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-20">
+                <span class="text-xs font-mono font-bold text-white px-3.5 py-1.5 rounded-xl bg-white/20 backdrop-blur-md flex items-center gap-1.5 hover:bg-white/30 transition-all">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                  Inspect
+                </span>
+              </div>
+            </div>
+
+            <!-- Color Swatch changer with instant thumb transition -->
+            <div class="flex items-center gap-2 mt-4 px-1 relative z-20">
+              ${product.colors.map((color, colorIdx) => `
+                <button 
+                  onclick="changeProductColor(${product.id}, '${color}', ${colorIdx})" 
+                  class="interactive-elem w-4 h-4 rounded-full border border-white/20 hover:scale-125 transition-transform" 
+                  style="background-color: ${color};"
+                ></button>
+              `).join('')}
+            </div>
+
+            <!-- Title & Rating -->
+            <div class="mt-3 relative z-20">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="uppercase font-mono text-[10px] text-accent-cyan">${product.category}</span>
+                <span class="flex items-center text-amber-400 text-xs font-mono">
+                  <i data-lucide="star" class="w-3 h-3 fill-amber-400 mr-1"></i>
+                  ${product.rating}
+                </span>
+              </div>
+              <h3 class="font-display font-bold text-white text-base mt-1 group-hover:text-accent-cyan transition-colors">
+                ${product.name}
+              </h3>
+            </div>
+          </div>
+
+          <!-- Bottom Price / Add to Bag -->
+          <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between relative z-20">
+            <div>
+              <div class="text-[10px] font-mono text-slate-400">Retail</div>
+              <div class="text-lg font-display font-black text-white">$${product.price}</div>
+            </div>
+
+            <button 
+              onclick="triggerAddToCart(${product.id}, event)"
+              class="interactive-elem px-4 py-2 rounded-xl bg-white text-dark-950 hover:bg-accent-cyan hover:text-dark-950 font-display font-bold text-xs uppercase transition-all duration-200 shadow-md active:scale-90 flex items-center gap-1.5 group/btn"
+            >
+              <i data-lucide="plus" class="w-3.5 h-3.5 group-hover/btn:rotate-90 transition-transform"></i>
+              <span>Add</span>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Add fadeSlideUp CSS animation dynamically
+      if (!document.getElementById('card-animations-style')) {
+        const style = document.createElement('style');
+        style.id = 'card-animations-style';
+        style.textContent = `
+          @keyframes fadeSlideUp {
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      lucide.createIcons();
+      setupCardTilts();
+      if (window.refreshCursorTargets) window.refreshCursorTargets();
+    }
+
+    function getBadgeStyle(badge) {
+      switch (badge.toLowerCase()) {
+        case 'flagship': return 'bg-accent/20 text-accent-neon border border-accent/40';
+        case 'popular': return 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
+        case 'new': return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+        case 'sale': return 'bg-rose-500/20 text-rose-400 border border-rose-500/40';
+        default: return 'bg-white/10 text-slate-300 border border-white/10';
+      }
+    }
+
+    function handleFilterChange(category, btnElement) {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('bg-accent', 'text-white', 'shadow-lg');
+        btn.classList.add('text-slate-400');
+      });
+      btnElement.classList.remove('text-slate-400');
+      btnElement.classList.add('bg-accent', 'text-white', 'shadow-lg');
+
+      if (category === 'all') {
+        renderProductsGrid(PRODUCTS);
+      } else {
+        const filtered = PRODUCTS.filter(p => p.category === category);
+        renderProductsGrid(filtered);
+      }
+    }
+
+    function changeProductColor(productId, colorHex, thumbIdx) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      const img = document.getElementById(`product-img-${productId}`);
+      if (!product || !img) return;
+
+      img.style.transform = 'scale(0.85) rotate(-5deg)';
+      img.style.opacity = '0.5';
+
+      setTimeout(() => {
+        if (product.thumbnails && product.thumbnails[thumbIdx]) {
+          img.src = product.thumbnails[thumbIdx];
+        }
+        img.style.transform = 'scale(1) rotate(0deg)';
+        img.style.opacity = '1';
+        showToast("Finish Updated", `Selected finish for ${product.name}`);
+      }, 200);
+    }
+
+    /* =========================================================================
+       6. PARTICLES BURST & FLY-TO-CART ANIMATION
+       ========================================================================= */
+    function triggerAddToCart(productId, event) {
+      const product = PRODUCTS.find(p => p.id === productId) || PRODUCTS[0];
+      const button = event.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const cartBtn = document.getElementById('open-cart-btn');
+      const cartRect = cartBtn.getBoundingClientRect();
+
+      // 1. Particle Burst
+      createParticleBurst(event.clientX, event.clientY);
+
+      // 2. Fly Clone Animation
+      const clone = document.createElement('div');
+      clone.className = 'fly-clone';
+      clone.style.left = `${rect.left}px`;
+      clone.style.top = `${rect.top}px`;
+      clone.style.width = '42px';
+      clone.style.height = '42px';
+      clone.innerHTML = `<img src="${product.image}" class="w-full h-full object-cover rounded-xl bg-dark-900 border border-accent">`;
+      document.body.appendChild(clone);
+
+      requestAnimationFrame(() => {
+        clone.style.left = `${cartRect.left + 15}px`;
+        clone.style.top = `${cartRect.top + 10}px`;
+        clone.style.transform = 'scale(0.2) rotate(45deg)';
+        clone.style.opacity = '0.2';
+      });
+
+      setTimeout(() => {
+        clone.remove();
+        addItemToCart(product);
+        showToast("Added to Bag", product.name);
+      }, 750);
+    }
+
+    function createParticleBurst(x, y) {
+      const colors = ['#6366f1', '#06b6d4', '#ec4899', '#a855f7', '#ffffff'];
+      for (let i = 0; i < 14; i++) {
+        const p = document.createElement('div');
+        p.className = 'burst-particle';
+        const size = Math.random() * 6 + 4;
+        p.style.width = `${size}px`;
+        p.style.height = `${size}px`;
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 70 + 20;
+        p.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        p.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+        document.body.appendChild(p);
+
+        setTimeout(() => p.remove(), 700);
+      }
+    }
+
+    function toggleWishlist(productId, btnElement, event) {
+      const index = wishlist.indexOf(productId);
+      const icon = btnElement.querySelector('svg') || btnElement.querySelector('i');
+      
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        btnElement.classList.remove('text-accent-pink');
+        if (icon) icon.classList.remove('fill-accent-pink');
+        showToast("Removed from Wishlist", "Item unpinned from private collection.");
+      } else {
+        wishlist.push(productId);
+        btnElement.classList.add('text-accent-pink');
+        if (icon) icon.classList.add('fill-accent-pink');
+        createParticleBurst(event.clientX, event.clientY);
+        showToast("Saved to Wishlist", "Item bookmarked with cloud sync.");
+      }
+      
+      updateWishlistBadge();
+    }
+
+    function updateWishlistBadge() {
+      const countEl = document.getElementById('wishlist-count');
+      countEl.textContent = wishlist.length;
+      if (wishlist.length > 0) {
+        countEl.classList.remove('scale-0');
+      } else {
+        countEl.classList.add('scale-0');
+      }
+    }
+
+    /* =========================================================================
+       7. HOTSPOT EXPLORER INTERACTION
+       ========================================================================= */
+    function activateHotspot(index) {
+      const data = HOTSPOTS[index];
+      if (!data) return;
+
+      const titleEl = document.getElementById('hotspot-detail-title');
+      const descEl = document.getElementById('hotspot-detail-desc');
+
+      titleEl.style.opacity = '0';
+      descEl.style.opacity = '0';
+
+      setTimeout(() => {
+        titleEl.textContent = data.title;
+        descEl.textContent = data.desc;
+        titleEl.style.opacity = '1';
+        descEl.style.opacity = '1';
+      }, 150);
+    }
+
+    /* =========================================================================
+       8. CART DRAWER & FREE SHIPPING CONFETTI CELEBRATION
+       ========================================================================= */
+    function addItemToCart(product, quantity = 1) {
+      const existing = cart.find(item => item.id === product.id);
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          quantity: quantity
+        });
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const counter = document.getElementById('cart-counter');
+      const drawerCount = document.getElementById('drawer-item-count');
+      const itemsContainer = document.getElementById('cart-items-container');
+      const emptyState = document.getElementById('empty-cart-state');
+      const subtotalEl = document.getElementById('cart-subtotal');
+      const totalEl = document.getElementById('cart-total');
+      const shippingBar = document.getElementById('shipping-bar');
+      const shippingPrompt = document.getElementById('shipping-prompt');
+      const shippingPercent = document.getElementById('shipping-percent');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      counter.textContent = totalItems;
+      drawerCount.textContent = `${totalItems} items`;
+
+      // Scale bounce effect on counter
+      counter.classList.add('scale-125');
+      setTimeout(() => counter.classList.remove('scale-125'), 200);
+
+      if (cart.length === 0) {
+        itemsContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        hasTriggeredConfetti = false;
+      } else {
+        emptyState.classList.add('hidden');
+        emptyState.classList.remove('flex');
+        
+        itemsContainer.innerHTML = cart.map(item => `
+          <div class="flex items-center gap-3 p-3.5 rounded-2xl glass-box-subtle border border-white/5 relative group hover:border-white/20 transition-all">
+            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-xl object-contain bg-dark-900 p-1 flex-shrink-0" />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-bold text-white truncate font-display">${item.name}</h4>
+              <div class="text-xs text-accent-cyan font-mono font-bold mt-0.5">$${item.price}</div>
+              
+              <!-- Quantity stepper -->
+              <div class="flex items-center gap-2 mt-2">
+                <div class="flex items-center glass-box-subtle rounded-lg px-2 py-0.5 border border-white/10">
+                  <button onclick="updateCartItemQty(${item.id}, -1)" class="interactive-elem w-5 h-5 text-slate-300 hover:text-white flex items-center justify-center font-bold text-xs">-</button>
+                  <span class="w-6 text-center text-xs font-mono font-bold text-white">${item.quantity}</span>
+                  <button onclick="updateCartItemQty(${item.id}, 1)" class="interactive-elem w-5 h-5 text-slate-300 hover:text-white flex items-center justify-center font-bold text-xs">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Remove Button -->
+            <button onclick="removeCartItem(${item.id})" class="interactive-elem p-2 text-slate-500 hover:text-rose-400 transition-colors">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      // Calculation
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const discountAmount = subtotal * appliedDiscount;
+      const total = Math.max(0, subtotal - discountAmount);
+
+      subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+      totalEl.textContent = `$${total.toFixed(2)}`;
+
+      // Free shipping threshold ($200) + Confetti effect
+      const shippingGoal = 200;
+      const progress = Math.min(100, Math.round((subtotal / shippingGoal) * 100));
+      shippingBar.style.width = `${progress}%`;
+      shippingPercent.textContent = `${progress}%`;
+
+      if (subtotal >= shippingGoal) {
+        shippingPrompt.innerHTML = `<span class="text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Free Worldwide Courier Unlocked!</span>`;
+        if (!hasTriggeredConfetti && typeof confetti === 'function') {
+          hasTriggeredConfetti = true;
+          confetti({
+            particleCount: 60,
+            spread: 70,
+            origin: { y: 0.7 }
+          });
+        }
+      } else {
+        hasTriggeredConfetti = false;
+        const remaining = (shippingGoal - subtotal).toFixed(2);
+        shippingPrompt.textContent = `Add $${remaining} more for Free Courier`;
+      }
+
+      if (window.refreshCursorTargets) window.refreshCursorTargets();
+    }
+
+    function updateCartItemQty(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      }
+      updateCartUI();
+    }
+
+    function removeCartItem(id) {
+      cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+    }
+
+    function setupCartDrawer() {
+      const openBtn = document.getElementById('open-cart-btn');
+      const closeBtn = document.getElementById('close-cart-btn');
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+
+      openBtn.addEventListener('click', openCart);
+      closeBtn.addEventListener('click', closeCart);
+      backdrop.addEventListener('click', closeCart);
+    }
+
+    function openCart() {
+      const drawer = document.getElementById('cart-drawer');
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+      drawer.classList.remove('translate-x-full');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeCart() {
+      const drawer = document.getElementById('cart-drawer');
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+      drawer.classList.add('translate-x-full');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function applyCoupon() {
+      const input = document.getElementById('coupon-input');
+      const feedback = document.getElementById('coupon-feedback');
+      const discountRow = document.getElementById('discount-row');
+      const code = input.value.trim().toUpperCase();
+
+      feedback.classList.remove('hidden', 'text-rose-400', 'text-emerald-400');
+
+      if (code === 'AETHER10') {
+        appliedDiscount = 0.10;
+        feedback.textContent = "Coupon Verified (-10% VIP Discount)";
+        feedback.classList.add('text-emerald-400');
+        discountRow.classList.remove('hidden');
+        discountRow.classList.add('flex');
+        updateCartUI();
+      } else {
+        feedback.textContent = "Invalid code. Use 'AETHER10'";
+        feedback.classList.add('text-rose-400');
+      }
+    }
+
+    function initiateCheckout() {
+      if (cart.length === 0) {
+        showToast("Bag Vacant", "Please select items first.");
+        return;
+      }
+      showToast("Quantum Session Initialized", "Connecting to encrypted gateway...");
+      setTimeout(() => {
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+        }
+        cart = [];
+        updateCartUI();
+        closeCart();
+        showToast("Order Confirmed! 🚀", "Encrypted receipt transmitted to email.");
+      }, 1600);
+    }
+
+    /* =========================================================================
+       9. QUICK VIEW MODAL & ZOOM
+       ========================================================================= */
+    function openQuickView(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      quickViewItem = product;
+      quickViewQty = 1;
+
+      document.getElementById('qv-title').textContent = product.name;
+      document.getElementById('qv-price').textContent = `$${product.price}`;
+      document.getElementById('qv-description').textContent = product.description;
+      document.getElementById('qv-category').textContent = product.category;
+      document.getElementById('qv-rating').textContent = product.rating;
+      document.getElementById('qv-image').src = product.image;
+      document.getElementById('qv-quantity').textContent = "1";
+
+      const thumbContainer = document.getElementById('qv-thumbnails');
+      thumbContainer.innerHTML = (product.thumbnails || [product.image]).map((thumb) => `
+        <button onclick="document.getElementById('qv-image').src='${thumb}'" class="interactive-elem w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:border-accent-cyan p-1 transition-all overflow-hidden">
+          <img src="${thumb}" class="w-full h-full object-contain">
+        </button>
+      `).join('');
+
+      const colorsContainer = document.getElementById('qv-colors');
+      colorsContainer.innerHTML = product.colors.map(color => `
+        <span class="interactive-elem w-6 h-6 rounded-full border-2 border-white/20 hover:scale-125 cursor-pointer transition-transform" style="background-color: ${color}"></span>
+      `).join('');
+
+      const addBtn = document.getElementById('qv-add-btn');
+      addBtn.onclick = (e) => {
+        addItemToCart(quickViewItem, quickViewQty);
+        createParticleBurst(e.clientX, e.clientY);
+        closeQuickView();
+        showToast("Added to Bag", `${quickViewQty}x ${quickViewItem.name}`);
+      };
+
+      const modal = document.getElementById('quickview-modal');
+      const panel = document.getElementById('quickview-panel');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      panel.classList.remove('scale-90');
+      panel.classList.add('scale-100');
+      lucide.createIcons();
+
+      if (window.refreshCursorTargets) window.refreshCursorTargets();
+    }
+
+    function closeQuickView() {
+      const modal = document.getElementById('quickview-modal');
+      const panel = document.getElementById('quickview-panel');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      panel.classList.add('scale-90');
+      panel.classList.remove('scale-100');
+    }
+
+    function incrementQvQuantity() {
+      quickViewQty++;
+      document.getElementById('qv-quantity').textContent = quickViewQty;
+    }
+
+    function decrementQvQuantity() {
+      if (quickViewQty > 1) {
+        quickViewQty--;
+        document.getElementById('qv-quantity').textContent = quickViewQty;
+      }
+    }
+
+    function openVideoModal() {
+      const modal = document.getElementById('video-modal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('video-modal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    /* =========================================================================
+       10. LIVE SEARCH, COUNTDOWN & SCROLL PROGRESS
+       ========================================================================= */
+    function setupLiveSearch() {
+      const searchInput = document.getElementById('search-input');
+      const dropdown = document.getElementById('search-dropdown');
+
+      searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        if (!term) {
+          dropdown.classList.add('hidden');
+          dropdown.classList.remove('flex');
+          return;
+        }
+
+        const matches = PRODUCTS.filter(p => p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term));
+        if (matches.length === 0) {
+          dropdown.innerHTML = `<div class="p-3 text-xs text-slate-400 font-mono text-center">No hardware found</div>`;
+        } else {
+          dropdown.innerHTML = matches.slice(0, 4).map(item => `
+            <div onclick="openQuickView(${item.id}); dropdown.classList.add('hidden');" class="interactive-elem flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 cursor-pointer transition-colors">
+              <img src="${item.image}" class="w-10 h-10 object-contain rounded-lg bg-dark-900 p-0.5">
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-bold text-white truncate font-display">${item.name}</div>
+                <div class="text-[10px] font-mono text-accent-cyan">$${item.price}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        dropdown.classList.remove('hidden');
+        dropdown.classList.add('flex');
+        if (window.refreshCursorTargets) window.refreshCursorTargets();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    function setupCountdownTimer() {
+      let hours = 14, minutes = 48, seconds = 22, millis = 99;
+      const hEl = document.getElementById('timer-hours');
+      const mEl = document.getElementById('timer-minutes');
+      const sEl = document.getElementById('timer-seconds');
+      const msEl = document.getElementById('timer-millis');
+
+      setInterval(() => {
+        millis -= 3;
+        if (millis <= 0) {
+          millis = 99;
+          seconds--;
+          if (seconds < 0) {
+            seconds = 59;
+            minutes--;
+            if (minutes < 0) {
+              minutes = 59;
+              hours--;
+            }
+          }
+        }
+        if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+        if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
+        if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+        if (msEl) msEl.textContent = String(millis).padStart(2, '0');
+      }, 30);
+    }
+
+    function setupScrollProgress() {
+      const ring = document.getElementById('scroll-progress-ring');
+      const backToTopBtn = document.getElementById('back-to-top');
+      const circumference = 2 * Math.PI * 20; // 125.66
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollTop / docHeight;
+        
+        if (ring) {
+          const offset = circumference - (progress * circumference);
+          ring.style.strokeDashoffset = offset;
+        }
+
+        if (scrollTop > 350) {
+          backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+        } else {
+          backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+        }
+      });
+    }
+
+    function showToast(title, message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-title').textContent = title;
+      document.getElementById('toast-message').textContent = message;
+
+      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    function handleNewsletter(e) {
+      e.preventDefault();
+      document.getElementById('newsletter-status').classList.remove('hidden');
+      document.getElementById('newsletter-email').value = '';
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 50, spread: 60 });
+      }
+      showToast("Access Granted", "VIP synchronization complete.");
+    }
+  </script>
+</body>
+</html>
